@@ -3,6 +3,7 @@ import "./App.css";
 
 function App() {
   const [regions, setRegins] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch(
@@ -10,6 +11,7 @@ function App() {
     )
       .then((res) => res.json())
       .then((countries) => {
+        setIsLoading(false);
         const data = {};
         countries.forEach((country) => {
           if (!country.region) return;
@@ -50,15 +52,19 @@ function App() {
     <>
       <div>
         <h1>Region Stats</h1>
-        <ul>
-          {regions.map((r) => (
-            <li key={r.region}>
-              <strong>{r.region}</strong> — Countries: {r.countryCount},
-              Population: {r.totalPopulation}, Avg Density:{" "}
-              {r.avgDensity.toFixed(2) ?? "N/A"}
-            </li>
-          ))}
-        </ul>
+        {isLoading && <h3>Loading...</h3>}
+
+        {!isLoading && (
+          <ul>
+            {regions.map((r) => (
+              <li key={r.region}>
+                <strong>{r.region}</strong> — Countries: {r.countryCount},
+                Population: {r.totalPopulation}, Avg Density:{" "}
+                {r.avgDensity.toFixed(2) ?? "N/A"}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </>
   );
